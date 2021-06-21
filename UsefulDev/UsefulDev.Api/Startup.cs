@@ -1,12 +1,15 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-
 namespace UsefulDev.Api
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.OpenApi.Models;
+    using UsefulDev.Core;
+    using UsefulDev.Core.Services;
+    using UsefulDev.Providers.FileGenerators;
+
     /// <summary>
     /// Api startup
     /// </summary>
@@ -39,6 +42,8 @@ namespace UsefulDev.Api
 
             services.AddControllers();
 
+            SetupApplication(services);
+
             services.AddHealthChecks();
 
             services.AddSwaggerGen(c =>
@@ -58,7 +63,7 @@ namespace UsefulDev.Api
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationProviders providers)
         {
             if (env.IsDevelopment())
             {
@@ -86,6 +91,18 @@ namespace UsefulDev.Api
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health");
             });
+
+            providers.Services = app.ApplicationServices;
         }
+
+        private void SetupApplication(IServiceCollection services)
+        {
+            var applicationProviders = new ApplicationProviders();
+
+            services.AddHandlers();
+            services.AddFileGenerators(applicationProviders);
+            services.AddSingleton(applicationProviders);
+        }
+
     }
 }
