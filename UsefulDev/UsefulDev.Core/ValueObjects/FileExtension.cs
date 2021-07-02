@@ -2,7 +2,7 @@
 {
     public enum FileExtension
     {
-        pdf,
-        txt
+        txt,
+        pdf
     }
 }

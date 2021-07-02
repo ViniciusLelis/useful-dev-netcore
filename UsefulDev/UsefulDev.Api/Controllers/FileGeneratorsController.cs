@@ -10,7 +10,7 @@
     using UsefulDev.Core.ValueObjects;
 
     [ApiController]
-    [Route("file-generators")]
+    [Route("api/v1/file-generators")]
     public class FileGeneratorsController : ControllerBase
     {
         [ProducesResponseType(typeof(FileContentResult), 200)]

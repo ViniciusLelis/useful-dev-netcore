@@ -18,6 +18,8 @@ namespace UsefulDev.Api
         const string _appTitle = "UsefulDev";
         const string _appDescription = "Tools for developers and QA analysts";
 
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
@@ -39,6 +41,17 @@ namespace UsefulDev.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting(options => options.LowercaseUrls = true);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.AllowAnyOrigin()
+                                             .AllowAnyMethod()
+                                             .AllowAnyHeader();
+                                  });        
+            });
 
             services.AddControllers();
 
@@ -84,6 +97,8 @@ namespace UsefulDev.Api
 
             app.UseRouting();
 
+            app.UseCors(MyAllowSpecificOrigins);
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -95,7 +110,7 @@ namespace UsefulDev.Api
             providers.Services = app.ApplicationServices;
         }
 
-        private void SetupApplication(IServiceCollection services)
+        private static void SetupApplication(IServiceCollection services)
         {
             var applicationProviders = new ApplicationProviders();
 
