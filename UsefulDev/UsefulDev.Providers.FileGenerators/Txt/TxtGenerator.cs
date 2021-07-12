@@ -23,7 +23,7 @@
             _manager = manager;
         }
 
-        public async Task<RecyclableMemoryStream> GenerateFile(int fileSize, string[] randomWordsSet, CancellationToken ctx)
+        public async Task<RecyclableMemoryStream> GenerateFile(int fileSize, IEnumerable<string> randomWordsSet, CancellationToken ctx)
         {
             if (true != randomWordsSet?.Any())
             {

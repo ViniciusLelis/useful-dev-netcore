@@ -1,5 +1,6 @@
 ﻿namespace UsefulDev.Core.Events
 {
+    using System.Collections.Generic;
     using UsefulDev.Core.ValueObjects;
     
     /// <summary>
@@ -11,7 +12,7 @@
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public FileGenerateEvent(FileExtension fileExtension, int fileSize, string[] randomWordsSet)
+        public FileGenerateEvent(FileExtension fileExtension, int fileSize, IEnumerable<string> randomWordsSet)
         {
             FileExtension = fileExtension;
             FileSize = fileSize;
@@ -31,6 +32,6 @@
         /// <summary>
         /// Set of random words to use when generating a file (Can be null or empty if the api is supposed to generate freely)
         /// </summary>
-        public string[] RandomWordsSet { get; set; }
+        public IEnumerable<string> RandomWordsSet { get; set; }
     }
 }

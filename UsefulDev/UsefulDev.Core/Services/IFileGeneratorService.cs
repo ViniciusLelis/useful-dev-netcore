@@ -2,6 +2,7 @@
 {
 
     using Microsoft.IO;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using UsefulDev.Core.ValueObjects;
@@ -10,6 +11,6 @@
     {
         static FileExtension FileExtension { get; }
 
-        Task<RecyclableMemoryStream> GenerateFile(int fileSize, string[] randomWordsSet, CancellationToken ctx);
+        Task<RecyclableMemoryStream> GenerateFile(int fileSize, IEnumerable<string> randomWordsSet, CancellationToken ctx);
     }
 }

@@ -2,9 +2,11 @@
 {
     using Microsoft.AspNetCore.Mvc;
     using System;
+    using System.ComponentModel.DataAnnotations;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using UsefulDev.Api.Models;
+    using UsefulDev.Core;
     using UsefulDev.Core.Events;
     using UsefulDev.Core.Handlers;
     using UsefulDev.Core.ValueObjects;
@@ -15,13 +17,18 @@
     {
         [ProducesResponseType(typeof(FileContentResult), 200)]
         [ProducesResponseType(500)]
-        [HttpPost]
-        public async Task<FileResult> GenerateFile([FromServices] FileGeneratorHandler handler, [FromBody] FileGeneratorModel model, CancellationToken ctx)
+        [HttpGet]
+        public async Task<FileResult> GenerateFile([FromServices] FileGeneratorHandler handler, 
+            [FromQuery] FileExtension fileExtension, 
+            [FromQuery] string fileName,
+            [FromQuery][Range(Constants.MIN_GENERATE_FILE_SIZE_BYTES, Constants.MAX_GENERATE_FILE_SIZE_BYTES)] int fileSizeBytes,
+            [FromQuery] string[] randomWordsSet, CancellationToken ctx)
         {
-            var @event = new FileGenerateEvent(model.FileExtension, model.FileSizeBytes, model.RandomWordsSet);
+            var words = randomWordsSet?.Where(word => !string.IsNullOrWhiteSpace(word)).SelectMany(word => word.Split(",")).Select(word => word.Trim());
+            var @event = new FileGenerateEvent(fileExtension, fileSizeBytes, words);
             var stream = await handler.Handle(@event, ctx);
             
-            var fileNameFormatted = $"{model.FileName}.{Enum.GetName(typeof(FileExtension), model.FileExtension)}";
+            var fileNameFormatted = $"{fileName}.{Enum.GetName(typeof(FileExtension), fileExtension)}";
             var contentType = MimeTypes.GetMimeType(fileNameFormatted);
 
             return File(stream, contentType, fileNameFormatted);

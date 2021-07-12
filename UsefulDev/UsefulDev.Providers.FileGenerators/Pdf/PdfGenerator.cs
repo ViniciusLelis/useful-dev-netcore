@@ -27,7 +27,7 @@
             _manager = manager;
         }
 
-        public async Task<RecyclableMemoryStream> GenerateFile(int fileSize, string[] randomWordsSet, CancellationToken ctx)
+        public async Task<RecyclableMemoryStream> GenerateFile(int fileSize, IEnumerable<string> randomWordsSet, CancellationToken ctx)
         {
             if (true != randomWordsSet?.Any())
             {
@@ -55,7 +55,7 @@
             return finalStream;
         }
 
-        private PdfDocument GeneratePdfWithContent(string[] randomWordsSet)
+        private PdfDocument GeneratePdfWithContent(IEnumerable<string> randomWordsSet)
         {
             var pdfDocument = new PdfDocument
             {
@@ -72,8 +72,8 @@
             var random = new Random();
             for (int i = 0; i < WORD_COUNT; i++)
             {
-                var randomIndex = random.Next(0, randomWordsSet.Length);
-                var randomWord = randomWordsSet[randomIndex];
+                var randomIndex = random.Next(0, randomWordsSet.Count());
+                var randomWord = randomWordsSet.ElementAt(randomIndex);
                 words.Add(randomWord);
             }
 
